@@ -130,7 +130,4 @@ dist
 .pnp.*
 
 # Ignorar Banco de dados
-db/*
-
-# Ignorar as chaves no disco
-keys/*
+db/
