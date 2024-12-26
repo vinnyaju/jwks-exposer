@@ -6,12 +6,6 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { saveDbClientId, saveDbAsymmetricKeys, saveDbSymmetricKey } from '../../database/operations.js';
 
-
-/**
- * Diretório raiz para salvar as chaves
- */
-const ROOT_KEYS_DIR = path.resolve('keys');
-
 /**
  * Menu principal para criação de chaves com client_id
  */
@@ -39,10 +33,6 @@ export async function createKey() {
   console.log(`Utilizando client_id: ${finalClientId}`);
   saveDbClientId(finalClientId);
 
-  // Subdiretório específico do client_id
-  const clientDir = path.join(ROOT_KEYS_DIR, finalClientId);
-  await fs.mkdir(clientDir, { recursive: true });
-
   // Tipo de chave a ser gerada
   const { keyType } = await inquirer.prompt([
     {
@@ -56,13 +46,13 @@ export async function createKey() {
   // Delegar criação conforme tipo de chave
   switch (keyType) {
     case 'RSA':
-      await createRSAKey(clientDir, finalClientId);
+      await createRSAKey(finalClientId);
       break;
     case 'EC (Elliptic Curve)':
-      await createECKey(clientDir, finalClientId);
+      await createECKey(finalClientId);
       break;
     case 'AES (Symmetric)':
-      await createAESKey(clientDir, finalClientId);
+      await createAESKey(finalClientId);
       break;
     default:
       console.log('Opção inválida.');
@@ -72,7 +62,7 @@ export async function createKey() {
 /**
  * Criação de chave RSA
  */
-async function createRSAKey(clientDir, finalClientId) {
+async function createRSAKey(finalClientId) {
   const { keySize } = await inquirer.prompt([
     {
       type: 'list',
@@ -97,7 +87,7 @@ async function createRSAKey(clientDir, finalClientId) {
 /**
  * Criação de chave EC (Elliptic Curve)
  */
-async function createECKey(clientDir, finalClientId) {
+async function createECKey(finalClientId) {
   const { curve } = await inquirer.prompt([
     {
       type: 'list',
@@ -122,7 +112,7 @@ async function createECKey(clientDir, finalClientId) {
 /**
  * Criação de chave AES
  */
-async function createAESKey(clientDir, finalClientId) {
+async function createAESKey(finalClientId) {
   const { keySize } = await inquirer.prompt([
     {
       type: 'list',

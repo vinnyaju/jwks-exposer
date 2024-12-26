@@ -15,7 +15,7 @@ function runMigrations() {
   db.exec(`
     CREATE TABLE IF NOT EXISTS clients (
       id CHAR(36) PRIMARY KEY,         -- UUID do client_id
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
   `);
 
@@ -27,7 +27,7 @@ function runMigrations() {
       type VARCHAR(10) NOT NULL,       -- Tipo da chave (rsa, ec, aes)
       usage VARCHAR(10) NOT NULL,      -- Uso: 'public', 'private' ou 'symmetric'
       value TEXT NOT NULL,             -- Valor da chave
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       PRIMARY KEY (id, type, usage),
       FOREIGN KEY (client_id) REFERENCES clients (id)
     );
