@@ -4,6 +4,9 @@ import path from 'path';
 import inquirer from 'inquirer';
 import { v4 as uuidv4 } from 'uuid';
 
+import { saveDbClientId, saveDbAsymmetricKeys, saveDbSymmetricKey } from '../../database/operations.js';
+
+
 /**
  * Diretório raiz para salvar as chaves
  */
@@ -34,6 +37,7 @@ export async function createKey() {
   const finalClientId = generateClientId ? uuidv4() : clientId;
 
   console.log(`Utilizando client_id: ${finalClientId}`);
+  saveDbClientId(finalClientId);
 
   // Subdiretório específico do client_id
   const clientDir = path.join(ROOT_KEYS_DIR, finalClientId);
@@ -52,13 +56,13 @@ export async function createKey() {
   // Delegar criação conforme tipo de chave
   switch (keyType) {
     case 'RSA':
-      await createRSAKey(clientDir);
+      await createRSAKey(clientDir, finalClientId);
       break;
     case 'EC (Elliptic Curve)':
-      await createECKey(clientDir);
+      await createECKey(clientDir, finalClientId);
       break;
     case 'AES (Symmetric)':
-      await createAESKey(clientDir);
+      await createAESKey(clientDir, finalClientId);
       break;
     default:
       console.log('Opção inválida.');
@@ -68,7 +72,7 @@ export async function createKey() {
 /**
  * Criação de chave RSA
  */
-async function createRSAKey(clientDir) {
+async function createRSAKey(clientDir, finalClientId) {
   const { keySize } = await inquirer.prompt([
     {
       type: 'list',
@@ -87,13 +91,13 @@ async function createRSAKey(clientDir) {
   });
 
   console.log('Chave RSA gerada com sucesso.');
-  await saveAsymmetricKeys(clientDir, 'rsa', { publicKey, privateKey });
+  await saveDbAsymmetricKeys(finalClientId, 'rsa', publicKey, privateKey);
 }
 
 /**
  * Criação de chave EC (Elliptic Curve)
  */
-async function createECKey(clientDir) {
+async function createECKey(clientDir, finalClientId) {
   const { curve } = await inquirer.prompt([
     {
       type: 'list',
@@ -112,13 +116,13 @@ async function createECKey(clientDir) {
   });
 
   console.log('Chave EC gerada com sucesso.');
-  await saveAsymmetricKeys(clientDir, 'ec', { publicKey, privateKey });
+  await saveDbAsymmetricKeys(finalClientId, 'ec', publicKey, privateKey);
 }
 
 /**
  * Criação de chave AES
  */
-async function createAESKey(clientDir) {
+async function createAESKey(clientDir, finalClientId) {
   const { keySize } = await inquirer.prompt([
     {
       type: 'list',
@@ -133,34 +137,5 @@ async function createAESKey(clientDir) {
   const key = crypto.randomBytes(keySize / 8).toString('hex');
 
   console.log('Chave AES gerada com sucesso.');
-  await saveSymmetricKey(clientDir, 'aes', key);
-}
-
-/**
- * Salvar chaves assimétricas com o mesmo UUID e sufixos "pub" e "priv"
- */
-async function saveAsymmetricKeys(clientDir, type, keys) {
-  const keyUuid = uuidv4(); // UUID compartilhado para ambas as chaves
-  const publicKeyPath = path.join(clientDir, `${keyUuid}-pub.pem`);
-  const privateKeyPath = path.join(clientDir, `${keyUuid}-priv.pem`);
-
-  await fs.writeFile(publicKeyPath, keys.publicKey);
-  await fs.writeFile(privateKeyPath, keys.privateKey);
-
-  console.log('Chaves salvas nos arquivos:');
-  console.log(`- Chave pública: ${publicKeyPath}`);
-  console.log(`- Chave privada: ${privateKeyPath}`);
-}
-
-/**
- * Salvar chave simétrica com um UUID único
- */
-async function saveSymmetricKey(clientDir, type, key) {
-  const keyUuid = uuidv4(); // UUID único para a chave simétrica
-  const keyPath = path.join(clientDir, `${keyUuid}-sim.txt`);
-
-  await fs.writeFile(keyPath, key);
-
-  console.log('Chave simétrica salva no arquivo:');
-  console.log(`- ${keyPath}`);
+  await saveDbSymmetricKey(finalClientId, 'aes', key);
 }
