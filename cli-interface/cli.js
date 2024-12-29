@@ -3,6 +3,7 @@ import { Command } from 'commander';
 import { createKey } from './commands/createKey.js';
 import { createPersistencyKey } from './commands/createPersistencyKey.js';
 import { getKeysByClientIdCmd } from './commands/getKeysByClientId.js';
+import { getPublicKeysByClientIdCmd } from './commands/getPublicKeysByClientId.js';
 import { getKeysByIdAndUsageCmd } from './commands/getkeysByIdAndUsage.js'
 import { getKeysByUsageCmd } from './commands/getKeysByUsage.js';
 
@@ -36,6 +37,14 @@ program
   .action( (clientId) => { 
     return getKeysByClientIdCmd(clientId); 
   });
+
+  // Comando: Consulta por `clientId`
+program
+.command('get-public-keys-by-client-id <clientId>')
+.description('Consulta chaves públicas por clientId')
+.action( (clientId) => { 
+  return getPublicKeysByClientIdCmd(clientId); 
+});
 
 // Comando: Consulta por `id` e `usage`
 program

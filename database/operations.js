@@ -131,3 +131,12 @@ export function getKeysByUsage(usage) {
   const keys = stmt.all(usage);
   return processKeysForDecryption(keys); // Processa as chaves retornadas
 }
+
+/**
+ * Consultar chaves públicas para um dado client_id
+ */
+export function getPublicKeysByClientId(clientId) {
+  const stmt = db.prepare('SELECT * FROM keys WHERE client_id = ? AND usage = ?;');
+  const keys = stmt.all(clientId, 'public');
+  return processKeysForDecryption(keys); // Processa as chaves retornadas
+}
