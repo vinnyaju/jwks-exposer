@@ -91,7 +91,7 @@ async function createRSAKey(finalClientId) {
   });
 
   console.log('Chave RSA gerada com sucesso.');
-  await saveDbAsymmetricKeys(finalClientId, 'rsa', publicKey, privateKey);
+  await saveDbAsymmetricKeys(finalClientId, 'rsa', keySize, publicKey, privateKey);
 }
 
 /**
@@ -116,7 +116,7 @@ async function createECKey(finalClientId) {
   });
 
   console.log('Chave EC gerada com sucesso.');
-  await saveDbAsymmetricKeys(finalClientId, 'ec', publicKey, privateKey);
+  await saveDbAsymmetricKeys(finalClientId, 'ec', curve, publicKey, privateKey);
 }
 
 /**
@@ -137,5 +137,5 @@ async function createAESKey(finalClientId) {
   const key = crypto.randomBytes(keySize / 8).toString('hex');
 
   console.log('Chave AES gerada com sucesso.');
-  await saveDbSymmetricKey(finalClientId, 'aes', key);
+  await saveDbSymmetricKey(finalClientId, 'aes', keySize, key);
 }

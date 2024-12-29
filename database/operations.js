@@ -77,31 +77,31 @@ export function saveDbClientId(clientId) {
 /**
  * Salvar chaves pública e privada de forma separada
  */
-export function saveDbAsymmetricKeys(clientId, type, publicKey, privateKey) {
+export function saveDbAsymmetricKeys(clientId, type, key_info, publicKey, privateKey) {
     const stmt = db.prepare(`
-      INSERT INTO keys (id, client_id, type, usage, value)
-      VALUES (?, ?, ?, ?, ?);
+      INSERT INTO keys (id, client_id, type, key_info, usage, value)
+      VALUES (?, ?, ?, ?, ?, ?);
     `);
   
     const keyUuid = generateUuid(); // UUID único compartilhado
     const encryptedPrivateKey = JSON.stringify(encryptKey(privateKey));
-    stmt.run(keyUuid, clientId, type, 'public', publicKey);
-    stmt.run(keyUuid, clientId, type, 'private', encryptedPrivateKey);
+    stmt.run(keyUuid, clientId, type, key_info, 'public', publicKey);
+    stmt.run(keyUuid, clientId, type, key_info, 'private', encryptedPrivateKey);
   
     console.log(`Chaves assimétricas salvas com ID: ${keyUuid}`);
   }
 /**
  * Salvar chave simétrica
  */
-export function saveDbSymmetricKey(clientId, type, value) {
+export function saveDbSymmetricKey(clientId, type, key_info, value) {
     const stmt = db.prepare(`
-      INSERT INTO keys (id, client_id, type, usage, value)
-      VALUES (?, ?, ?, ?, ?);
+      INSERT INTO keys (id, client_id, type, key_info, usage, value)
+      VALUES (?, ?, ?, ?, ?, ?);
     `);
   
     const keyUuid = generateUuid();
     const encryptedKey = JSON.stringify(encryptKey(value));
-    stmt.run(keyUuid, clientId, type, 'symmetric', encryptedKey);
+    stmt.run(keyUuid, clientId, type, key_info, 'symmetric', encryptedKey);
   
     console.log(`Chave simétrica salva com ID: ${keyUuid}`);
   }

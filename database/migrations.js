@@ -25,6 +25,7 @@ function runMigrations() {
       id CHAR(36) NOT NULL,            -- UUID da chave
       client_id CHAR(36) NOT NULL,     -- Relacionamento com o client_id
       type VARCHAR(10) NOT NULL,       -- Tipo da chave (rsa, ec, aes)
+      key_info VARCHAR(50) NOT NULL,   -- Informações da chave (ex: '2048', '4096', '256', 'prime256v1', 'secp384r1',  'secp521r1')
       usage VARCHAR(10) NOT NULL,      -- Uso: 'public', 'private' ou 'symmetric'
       value TEXT NOT NULL,             -- Valor da chave
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
