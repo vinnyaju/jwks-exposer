@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
 import { createKey } from './commands/createKey.js';
+import { createPersistencyKey } from './commands/createPersistencyKey.js';
 import { getKeysByClientId, getKeysByIdAndUsage, getKeysByUsage } from '../database/operations.js'; // Substitua pelo caminho correto
 
 import dotenv from 'dotenv';
@@ -19,6 +20,11 @@ program
   .command('createKey')
   .description('Gerenciar Chaves Criptográficas.')
   .action(createKey);
+
+program
+  .command('create-persistency-key')
+  .description('Gera uma chave de persistência em base64 para armazenamento de chaves privadas e simétricas na base de dados de maneira cifrada.')
+  .action(createPersistencyKey);
 
 
 // Comando: Consulta por `clientId`

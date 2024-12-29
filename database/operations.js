@@ -25,7 +25,7 @@ function processKeysForDecryption(keys) {
 // Função para descriptografar valores
 function decryptKey(value) {
 
-  const persistenceKey = Buffer.from(process.env.PERSISTENCE_KEY, 'base64');
+  const persistenceKey = Buffer.from(process.env.PERSISTENCY_KEY, 'base64');
 
   const parsedValue = JSON.parse(value);
 
@@ -47,7 +47,7 @@ function decryptKey(value) {
 }
 
 function encryptKey(value) {
-  const persistenceKey = Buffer.from(process.env.PERSISTENCE_KEY, 'base64');
+  const persistenceKey = Buffer.from(process.env.PERSISTENCY_KEY, 'base64');
   const iv = crypto.randomBytes(16);
   const cipher = crypto.createCipheriv('aes-256-gcm', persistenceKey, iv);
 
@@ -58,7 +58,7 @@ function encryptKey(value) {
   return {
       alg: 'AES-256-GCM',
       key_length: 256,
-      key_id: "ENV_PERSISTENCE_KEY", // Nomeando o campo
+      key_id: "ENV_PERSISTENCY_KEY", // Nomeando o campo
       iv: iv.toString('base64'),
       authTag: authTag.toString('base64'),
       encrypted_key: encrypted

@@ -9,11 +9,11 @@ import { saveDbClientId, saveDbAsymmetricKeys, saveDbSymmetricKey } from '../../
  */
 export async function createKey() {
 
-  if (!process.env.PERSISTENCE_KEY) {
-    throw new Error('Variável de ambiente PERSISTENCE_KEY não configurada!');
+  if (!process.env.PERSISTENCY_KEY) {
+    throw new Error('Variável de ambiente PERSISTENCY_KEY não configurada!');
   }
 
-  const persistenceKey = process.env.PERSISTENCE_KEY;
+  const persistenceKey = process.env.PERSISTENCY_KEY;
   
   const keyBuffer = Buffer.from(persistenceKey, 'base64');
   if (keyBuffer.length !== 32) {
