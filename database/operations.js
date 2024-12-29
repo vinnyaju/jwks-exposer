@@ -1,5 +1,8 @@
 import db from './migrations.js';
 import { v4 as uuidv4 } from 'uuid';
+import crypto from 'crypto'; // Importa o módulo crypto no Node.js
+import { Console } from 'console';
+
 
 /**
  * Salvar um novo client_id
@@ -24,8 +27,28 @@ export function saveDbAsymmetricKeys(clientId, type, publicKey, privateKey) {
     `);
   
     const keyUuid = generateUuid(); // UUID único compartilhado
+
+    const persistenceKey = process.env.PERSISTENCE_KEY;
+    const iv = crypto.randomBytes(16);
+    const cipher = crypto.createCipheriv('aes-256-gcm', Buffer.from(persistenceKey, 'base64'), iv);
+
+    let privateKeyEncrypted = cipher.update(privateKey, 'utf8', 'base64');
+    privateKeyEncrypted += cipher.final('base64');
+    const authTag = cipher.getAuthTag();
+
+
+    const jsonPrivateKeyEncrypted = JSON.stringify({
+      alg: 'AES-256-GCM',
+      key_length: 256,
+      key_id: "ENV_PERSISTENCE_KEY", // Nomeando o campo
+      iv: iv.toString('base64'),
+      authTag: authTag.toString('base64'),
+      encrypted_key: privateKeyEncrypted
+    });
+
+
     stmt.run(keyUuid, clientId, type, 'public', publicKey);
-    stmt.run(keyUuid, clientId, type, 'private', privateKey);
+    stmt.run(keyUuid, clientId, type, 'private', jsonPrivateKeyEncrypted);
   
     console.log(`Chaves assimétricas salvas com ID: ${keyUuid}`);
   }
@@ -39,7 +62,26 @@ export function saveDbSymmetricKey(clientId, type, value) {
     `);
   
     const keyUuid = generateUuid();
-    stmt.run(keyUuid, clientId, type, 'symmetric', value);
+
+    const persistenceKey = process.env.PERSISTENCE_KEY;
+    const iv = crypto.randomBytes(16);
+    const cipher = crypto.createCipheriv('aes-256-gcm', Buffer.from(persistenceKey, 'base64'), iv);
+
+    let valueEncrypted = cipher.update(value, 'utf8', 'base64');
+    valueEncrypted += cipher.final('base64');
+    const authTag = cipher.getAuthTag();
+
+
+    const jsonValueEncrypted = JSON.stringify({
+      alg: 'AES-256-GCM',
+      key_length: 256,
+      key_id: "ENV_PERSISTENCE_KEY", // Nomeando o campo
+      iv: iv.toString('base64'),
+      authTag: authTag.toString('base64'),
+      encrypted_key: valueEncrypted
+    });
+
+    stmt.run(keyUuid, clientId, type, 'symmetric', jsonValueEncrypted);
   
     console.log(`Chave simétrica salva com ID: ${keyUuid}`);
   }

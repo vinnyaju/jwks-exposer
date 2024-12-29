@@ -1,6 +1,4 @@
 import crypto from 'crypto';
-import fs from 'fs/promises';
-import path from 'path';
 import inquirer from 'inquirer';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -10,6 +8,18 @@ import { saveDbClientId, saveDbAsymmetricKeys, saveDbSymmetricKey } from '../../
  * Menu principal para criação de chaves com client_id
  */
 export async function createKey() {
+
+  if (!process.env.PERSISTENCE_KEY) {
+    throw new Error('Variável de ambiente PERSISTENCE_KEY não configurada!');
+  }
+
+  const persistenceKey = process.env.PERSISTENCE_KEY;
+  
+  const keyBuffer = Buffer.from(persistenceKey, 'base64');
+  if (keyBuffer.length !== 32) {
+    throw new Error('A chave de persistência deve ter 32 bytes para AES-256-GCM!');
+  }
+  
   console.log('=== Criação de Chaves de Criptografia ===');
 
   // Obter ou gerar client_id

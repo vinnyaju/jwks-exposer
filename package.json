@@ -12,6 +12,7 @@
   "dependencies": {
     "better-sqlite3": "^11.7.0",
     "commander": "^12.1.0",
+    "dotenv": "^16.4.7",
     "inquirer": "^12.3.0",
     "uuid": "^11.0.3"
   }

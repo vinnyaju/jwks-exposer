@@ -1,8 +1,11 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
 import { createKey } from './commands/crypto-keys.js';
+import dotenv from 'dotenv';
 
 const program = new Command();
+
+dotenv.config();
 
 program
   .name('admin-console')
