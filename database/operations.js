@@ -1,7 +1,6 @@
 import db from './migrations.js';
 import { v4 as uuidv4 } from 'uuid';
 import crypto from 'crypto'; // Importa o módulo crypto no Node.js
-import { Console } from 'console';
 
 
 // Gerar um novo client_id

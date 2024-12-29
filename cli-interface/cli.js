@@ -2,7 +2,9 @@
 import { Command } from 'commander';
 import { createKey } from './commands/createKey.js';
 import { createPersistencyKey } from './commands/createPersistencyKey.js';
-import { getKeysByClientId, getKeysByIdAndUsage, getKeysByUsage } from '../database/operations.js'; // Substitua pelo caminho correto
+import { getKeysByClientIdCmd } from './commands/getKeysByClientId.js';
+import { getKeysByIdAndUsageCmd } from './commands/getkeysByIdAndUsage.js'
+import { getKeysByUsageCmd } from './commands/getKeysByUsage.js';
 
 import dotenv from 'dotenv';
 
@@ -17,7 +19,7 @@ program
 
 // Comando para gerenciar usuários
 program
-  .command('createKey')
+  .command('create-key')
   .description('Gerenciar Chaves Criptográficas.')
   .action(createKey);
 
@@ -29,44 +31,26 @@ program
 
 // Comando: Consulta por `clientId`
 program
-  .command('get-by-client-id <clientId>')
+  .command('get-keys-by-client-id <clientId>')
   .description('Consulta chaves por clientId')
-  .action((clientId) => {
-    const keys = getKeysByClientId(clientId);
-    if (keys.length > 0) {
-      console.log(`Chaves encontradas para clientId "${clientId}":`);
-      console.log(keys);
-    } else {
-      console.log(`Nenhuma chave encontrada para clientId "${clientId}".`);
-    }
+  .action( (clientId) => { 
+    return getKeysByClientIdCmd(clientId); 
   });
 
 // Comando: Consulta por `id` e `usage`
 program
-  .command('get-by-id-and-usage <id> <usage>')
-  .description('Consulta chaves por ID e uso')
-  .action((id, usage) => {
-    const keys = getKeysByIdAndUsage(id, usage);
-    if (keys.length > 0) {
-      console.log(`Chaves encontradas para ID "${id}" com uso "${usage}":`);
-      console.log(keys);
-    } else {
-      console.log(`Nenhuma chave encontrada para ID "${id}" com uso "${usage}".`);
-    }
+  .command('get-keys-by-id-and-usage <id> <usage>')
+  .description('Consulta chaves por Id e Uso')
+  .action( (id, usage) => { 
+    return getKeysByIdAndUsageCmd(id, usage); 
   });
 
 // Comando: Consulta por `usage`
 program
-  .command('get-by-usage <usage>')
-  .description('Consulta chaves por uso')
-  .action((usage) => {
-    const keys = getKeysByUsage(usage);
-    if (keys.length > 0) {
-      console.log(`Chaves encontradas com uso "${usage}":`);
-      console.log(keys);
-    } else {
-      console.log(`Nenhuma chave encontrada com uso "${usage}".`);
-    }
+  .command('get-keys-by-usage <usage>')
+  .description('Consulta chaves por Uso')
+  .action( (usage) => { 
+    return getKeysByUsageCmd(usage); 
   });
 
 program.parse(process.argv);
