@@ -29,6 +29,8 @@ function runMigrations() {
       usage VARCHAR(10) NOT NULL,      -- Uso: 'public', 'private' ou 'symmetric'
       value TEXT NOT NULL,             -- Valor da chave
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      active BOOLEAN DEFAULT true,
+      inactivated_at TIMESTAMP NULL,
       PRIMARY KEY (id, type, usage),
       FOREIGN KEY (client_id) REFERENCES clients (id)
     );

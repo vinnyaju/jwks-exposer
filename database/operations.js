@@ -120,7 +120,7 @@ export function getKeysByClientId(clientId) {
 export function getKeysByIdAndUsage(id, usage) {
   const stmt = db.prepare('SELECT * FROM keys WHERE id = ? AND usage = ?;');
   const keys = stmt.all(id, usage);
-  return processKeysForDecryption(keys); // Processa as chaves retornadas
+  return processKeysForDecryption(keys);
 }
 
 /**
@@ -129,7 +129,7 @@ export function getKeysByIdAndUsage(id, usage) {
 export function getKeysByUsage(usage) {
   const stmt = db.prepare('SELECT * FROM keys WHERE usage = ?;');
   const keys = stmt.all(usage);
-  return processKeysForDecryption(keys); // Processa as chaves retornadas
+  return processKeysForDecryption(keys);
 }
 
 /**
@@ -138,5 +138,17 @@ export function getKeysByUsage(usage) {
 export function getPublicKeysByClientId(clientId) {
   const stmt = db.prepare('SELECT * FROM keys WHERE client_id = ? AND usage = ?;');
   const keys = stmt.all(clientId, 'public');
-  return processKeysForDecryption(keys); // Processa as chaves retornadas
+  return processKeysForDecryption(keys);
+}
+
+export function getPublicKeysByStatus(active) {
+  const stmt = db.prepare('SELECT * FROM keys WHERE active = ? AND usage = ?');
+  const keys = stmt.all(active, 'public');
+  return processKeysForDecryption(keys);
+}
+
+export function getPublicKeysByClientAndStatus(clientId, active) {
+  const stmt = db.prepare('SELECT * FROM keys WHERE client_id = ? AND active = ? AND usage = ?;');
+  const keys = stmt.all(clientId, active, 'public');
+  return processKeysForDecryption(keys);
 }

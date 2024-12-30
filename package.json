@@ -14,7 +14,9 @@
     "better-sqlite3": "^11.7.0",
     "commander": "^12.1.0",
     "dotenv": "^16.4.7",
+    "express": "^4.21.2",
     "inquirer": "^12.3.0",
+    "node-jose": "^2.2.0",
     "uuid": "^11.0.3"
   }
 }
