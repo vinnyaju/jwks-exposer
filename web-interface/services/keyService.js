@@ -7,29 +7,21 @@ import {
 // Retorna todas as chaves públicas por status
 export async function getPublicKeysByStatus(status) {
   const dbKeys = getFromDbPublicKeysByStatus(status);
-  const keys = [];
-
-  for (const dbKey of dbKeys) {
-    keys.push(await convertToJwk(dbKey));
-  }
-
-  const jwks = {
-    keys: keys
-  };
-
-  return jwks;
+  return createJwks(dbKeys);
 }
 
 // Retorna as chaves públicas por clientId e status
 export async function getPublicKeysByClientAndStatus(clientId, status) {
-  
   const dbKeys = getFromDbPublicKeysByClientAndStatus(clientId, status);
-  const keys = [];
+  return createJwks(dbKeys);
+}
 
+
+async function createJwks(dbKeys) {
+  const keys = [];
   for (const dbKey of dbKeys) {
     keys.push(await convertToJwk(dbKey));
   }
-
   const jwks = {
     keys: keys
   };
