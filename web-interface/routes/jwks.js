@@ -21,7 +21,7 @@ router.get('/:clientId/:status/jwks.json', async (req, res) => {
   const { clientId, status } = req.params;
 
   try {
-    const keys = await getPublicKeysByClientAndStatus(clientId, status);
+    const keys = await getPublicKeysByClientAndStatus(clientId, (status == 'active' ? 1 : 0));
     res.json(keys);
   } catch (error) {
     console.error('Erro ao buscar JWKS:', error);
